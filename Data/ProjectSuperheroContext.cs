@@ -14,6 +14,7 @@ namespace ProjectSuperhero.Data
         {
         }
 
-        public DbSet<ProjectSuperhero.Models.Series> Patient { get; set; } = default!;
+        public DbSet<ProjectSuperhero.Models.Comic> Comic { get; set; } = default!;
+        public DbSet<ProjectSuperhero.Models.Serie> Serie { get; set; } = default!;
     }
 }

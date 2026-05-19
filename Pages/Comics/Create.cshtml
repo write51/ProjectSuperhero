@@ -1,0 +1,99 @@
+﻿@page
+@model ProjectSuperhero.Pages.Comics.CreateModel
+
+        @{
+        ViewData["Title"] = "Create";
+        }
+        
+        <h1>Create</h1>
+        
+    <h4>Comic</h4>
+    <hr />
+    <div class="row">
+    <div class="col-md-4">
+    <form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Comic.SeriesId" class="control-label"></label>
+                <input asp-for="Comic.SeriesId" class="form-control" />
+                <span asp-validation-for="Comic.SeriesId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comic.Name" class="control-label"></label>
+                <input asp-for="Comic.Name" class="form-control" />
+                <span asp-validation-for="Comic.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comic.Number" class="control-label"></label>
+                <input asp-for="Comic.Number" class="form-control" />
+                <span asp-validation-for="Comic.Number" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comic.Cover" class="control-label"></label>
+                <input asp-for="Comic.Cover" class="form-control" />
+                <span asp-validation-for="Comic.Cover" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comic.ReleaseDate" class="control-label"></label>
+                <input asp-for="Comic.ReleaseDate" class="form-control" />
+                <span asp-validation-for="Comic.ReleaseDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comic.Resource" class="control-label"></label>
+                <input asp-for="Comic.Resource" class="form-control" />
+                <span asp-validation-for="Comic.Resource" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comic.Rating" class="control-label"></label>
+                <input asp-for="Comic.Rating" class="form-control" />
+                <span asp-validation-for="Comic.Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comic.OtherName" class="control-label"></label>
+                <input asp-for="Comic.OtherName" class="form-control" />
+                <span asp-validation-for="Comic.OtherName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comic.Genres" class="control-label"></label>
+                <input asp-for="Comic.Genres" class="form-control" />
+                <span asp-validation-for="Comic.Genres" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comic.Publisher" class="control-label"></label>
+                <input asp-for="Comic.Publisher" class="form-control" />
+                <span asp-validation-for="Comic.Publisher" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comic.Writer" class="control-label"></label>
+                <input asp-for="Comic.Writer" class="form-control" />
+                <span asp-validation-for="Comic.Writer" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comic.Artist" class="control-label"></label>
+                <input asp-for="Comic.Artist" class="form-control" />
+                <span asp-validation-for="Comic.Artist" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comic.PublicationDate" class="control-label"></label>
+                <input asp-for="Comic.PublicationDate" class="form-control" />
+                <span asp-validation-for="Comic.PublicationDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comic.Summary" class="control-label"></label>
+                <input asp-for="Comic.Summary" class="form-control" />
+                <span asp-validation-for="Comic.Summary" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
