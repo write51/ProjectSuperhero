@@ -1,0 +1,39 @@
+﻿@page
+@model ProjectSuperhero.Pages.LatestModel
+@{
+}
+
+<table class="table">
+    <tbody>
+        @{
+            int counter = 0;
+        }
+        @foreach (var item in Model.Latest)
+        {
+            if (counter % 3 == 0)
+            {
+                @:<tr>
+            }
+
+            <td>
+                <img src="Images/@item.Cover" alt="cover" /><br />
+                @Html.DisplayFor(modelItem => item.Name)<br />
+                @Html.DisplayFor(modelItem => item.Rating)
+            </td>
+            
+            counter++;
+
+            if (counter % 3 == 0)
+            {
+                @:</tr>
+            }
+        }
+
+
+        @* Close the row if the last one wasn’t complete *@
+        @if (counter % 3 != 0)
+        {
+            @:</tr>
+        }
+    </tbody>
+</table>
