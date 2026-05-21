@@ -1,0 +1,179 @@
+﻿@page
+@model ProjectSuperhero.Pages.SearchModel
+@{
+}
+
+<form asp-action="Index" method="get" class="card card-body bg-light mb-4">
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Comic ID</label>
+            <input type="number" name="Id" value="@ViewData["IdFilter"]" class="form-control" placeholder="Search ID..." />
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Series ID</label>
+            <input type="number" name="SeriesId" value="@ViewData["SeriesIdFilter"]" class="form-control" placeholder="Search Series ID..." />
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Comic Name</label>
+            <input type="text" name="Name" value="@ViewData["NameFilter"]" class="form-control" placeholder="Search name..." />
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Alternative Name</label>
+            <input type="text" name="OtherName" value="@ViewData["OtherNameFilter"]" class="form-control" placeholder="Search alternative name..." />
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Issue Number</label>
+            <input type="number" name="Number" value="@ViewData["NumberFilter"]" class="form-control" placeholder="Search issue #..." />
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Genres</label>
+            <input type="text" name="Genres" value="@ViewData["GenresFilter"]" class="form-control" placeholder="e.g. Sci-Fi, Action..." />
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Publisher</label>
+            <input type="text" name="Publisher" value="@ViewData["PublisherFilter"]" class="form-control" placeholder="Search publisher..." />
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Writer</label>
+            <input type="text" name="Writer" value="@ViewData["WriterFilter"]" class="form-control" placeholder="Search writer..." />
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Artist</label>
+            <input type="text" name="Artist" value="@ViewData["ArtistFilter"]" class="form-control" placeholder="Search artist..." />
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Minimum Rating</label>
+            <input type="number" name="Rating" value="@ViewData["RatingFilter"]" class="form-control" placeholder="Search rating..." />
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Release Date</label>
+            <input type="date" name="ReleaseDate" value="@ViewData["ReleaseDateFilter"]" class="form-control" />
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Publication Date (Text)</label>
+            <input type="text" name="PublicationDate" value="@ViewData["PublicationDateFilter"]" class="form-control" placeholder="e.g. May 2026..." />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Cover Image Source</label>
+            <input type="text" name="Cover" value="@ViewData["CoverFilter"]" class="form-control" placeholder="Search cover path/URL..." />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Resource/Source</label>
+            <input type="text" name="Resource" value="@ViewData["ResourceFilter"]" class="form-control" placeholder="Search resource..." />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Summary Keywords</label>
+            <input type="text" name="Summary" value="@ViewData["SummaryFilter"]" class="form-control" placeholder="Search keywords in summary..." />
+        </div>
+
+        <div class="col-md-12 mt-2">
+            <button type="submit" class="btn btn-primaryme-2">
+                <i class="bi bi-search"></i> Apply Filters
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">Clear Filters</a>
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped table-hover alignment-middle">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Comic[0].Cover)
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Comic[0].Name)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NumberSortParm"]">@Html.DisplayNameFor(model => model.Comic[0].Number)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PublisherSortParm"]">@Html.DisplayNameFor(model => model.Comic[0].Publisher)</a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Comic[0].Writer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Comic[0].Artist)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Comic[0].Genres)
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ReleaseDateSortParm"]">@Html.DisplayNameFor(model => model.Comic[0].ReleaseDate)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["RatingSortParm"]">@Html.DisplayNameFor(model => model.Comic[0].Rating)</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Comic)
+        {
+            <tr>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.Cover))
+                    {
+                        <img src="@item.Cover" alt="Cover for @item.Name" style="max-height: 80px; width: auto; border-radius: 4px;" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">No Cover</span>
+                    }
+                </td>
+                <td>
+                    <strong>@Html.DisplayFor(modelItem => item.Name)</strong>
+                    @if (!string.IsNullOrEmpty(item.OtherName))
+                    {
+                        <br />
+                
+                        <small class="text-muted">(@item.OtherName)</small>
+                    }
+                </td>
+                <td>
+                    #@Html.DisplayFor(modelItem => item.Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Publisher)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Writer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Artist)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genres)
+                </td>
+                <td>
+                    @item.ReleaseDate.ToString("yyyy-MM-dd")
+                </td>
+                <td>
+                    <span class="badge bg-warning text-dark">⭐ @item.Rating</span>
+                </td>
+                <td>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">Edit</a>
+                        <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-outline-info">Details</a>
+                        <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

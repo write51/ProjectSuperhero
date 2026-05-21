@@ -16,7 +16,10 @@
             }
 
             <td>
-                <img src="Images/@item.Cover" alt="cover" /><br />
+                <a href="Comics/Details?id=@item.Id">
+                    <img src="Images/@item.Cover" alt="cover" />
+                </a>
+                <br />
                 @Html.DisplayFor(modelItem => item.Name)<br />
                 @Html.DisplayFor(modelItem => item.Rating)
             </td>
