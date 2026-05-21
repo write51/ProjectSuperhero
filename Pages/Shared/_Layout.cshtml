@@ -30,6 +30,28 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Catalog">Catalog</a>
                         </li>
                     </ul>
+
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark fw-bold me-2" asp-page="/Admin/Comics/Index">🛡️ Admin Panel</a>
+                            </li>
+                            <li class="nav-item">
+                                <form class="form-inline m-0 p-0" asp-page="/Account/Logout" method="post">
+                                    <button type="submit" class="nav-link btn btn-link text-dark border-0 p-0 align-baseline">
+                                        Logout (@User.Identity.Name)
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Account/Login">Login</a>
+                            </li>
+                        }
+                    </ul>
                 </div>
             </div>
         </nav>
