@@ -4,9 +4,39 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-@*     <p>Learn more information about <a href="/Comics">comics</a>.</p>
- *@    <br />
-    <span>In development:</span><br /><br />
-    <a href="/Latest">Latest</a>
+<div class="container mt-4">
+    <div class="row">
+
+        <div class="col-md-9">
+            <h4 class="uppercase small fw-bold mb-3">Latest added comics</h4>
+
+            <div class="d-flex flex-wrap gap-4 justify-content-start">
+                @foreach (var item in Model.Latest)
+                {
+                    <div class="text-center mb-3" style="width: 130px;">
+                        <a href="Comics/Details?id=@item.Id" class="d-block p-1 bg-black rounded shadow-sm hover-zoom" style="border: 2px solid #333;">
+                            <img height="156" width="120" src="Images/@item.Cover" alt="cover" class="img-fluid rounded" style="object-fit: cover;" />
+                        </a>
+                        @* <div class="mt-2 text-truncate small fw-bold text-light">@item.Name</div> *@
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-3 mt-4 mt-md-0 border-start border-secondary ps-md-4">
+            <h4 class="uppercase small fw-bold mb-3">Genres</h4>
+
+            <div class="list-group list-group-flush">
+                <a href="/Search?Genre=Action" class="list-group-item list-group-item-action bg-transparent border-secondary py-2 px-1">Action</a>
+                <a href="/Search?Genre=Adventure" class="list-group-item list-group-item-action bg-transparent border-secondary py-2 px-1">Adventure</a>
+                <a href="/Search?Genre=Drama" class="list-group-item list-group-item-action bg-transparent border-secondary py-2 px-1">Drama</a>
+                <a href="/Search?Genre=Fantasy" class="list-group-item list-group-item-action bg-transparent border-secondary py-2 px-1">Fantasy</a>
+                <a href="/Search?Genre=Horror" class="list-group-item list-group-item-action bg-transparent border-secondary py-2 px-1">Horror</a>
+                <a href="/Search?Genre=Medieval" class="list-group-item list-group-item-action bg-transparent border-secondary py-2 px-1">Medieval</a>
+                <a href="/Search?Genre=Sci-Fi" class="list-group-item list-group-item-action bg-transparent border-secondary py-2 px-1">Sci-Fi</a>
+                <a href="/Search?Genre=Superpowers" class="list-group-item list-group-item-action bg-transparent border-secondary py-2 px-1">Superpowers</a>
+            </div>
+        </div>
+
+    </div>
 </div>

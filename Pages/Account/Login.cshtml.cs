@@ -27,7 +27,7 @@ namespace ProjectSuperhero.Pages.Account
             returnUrl ??= "/Admin/Comics/Index";
 
             // HARDCODED CREDENTIALS - Change these to your liking
-            if (Username == "admin" && Password == "Superhero2026!")
+            if (Username == "admin" && Password == "admin")
             {
                 // Create identity credentials (Claims)
                 var claims = new List<Claim>
