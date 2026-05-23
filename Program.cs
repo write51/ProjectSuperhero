@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<ProjectSuperheroContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("ProjectSuperheroContext") ?? throw new InvalidOperationException("Connection string 'Lab5Context' not found.")));
+    options.UseSqlite(builder.Configuration.GetConnectionString("ProjectSuperheroContext") ?? throw new InvalidOperationException("Connection string 'ProjectSuperheroContext' not found.")));
 
 // 1. ADDED: Configure Razor Pages folder conventions and security policies
 builder.Services.AddRazorPages(options =>
@@ -32,12 +32,6 @@ builder.Services.AddAuthorization(options =>
 });
 
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    SeedData.Initialize(services);
-}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
