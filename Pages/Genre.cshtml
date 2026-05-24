@@ -1,0 +1,120 @@
+﻿@page
+@model ProjectSuperhero.Pages.GenreModel
+@{
+    ViewData["Title"] = !string.IsNullOrEmpty(Model.CurrentGenre) ? $"{Model.CurrentGenre} Comics" : "Genres";
+
+    // --- Window Pagination Rendering Logic ---
+    int maxVisiblePages = 5;
+    int startPage = Math.Max(1, Model.CurrentPage - (maxVisiblePages / 2));
+    int endPage = Math.Min(Model.TotalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages)
+    {
+        startPage = Math.Max(1, endPage - maxVisiblePages + 1);
+    }
+}
+
+<div class="container py-2">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-page="/Index">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.CurrentGenre</li>
+        </ol>
+    </nav>
+
+    <h2 class="mb-4">@Model.CurrentGenre Comics <span class="badge bg-secondary fs-6 align-middle">Genre Filter</span></h2>
+
+    @if (!Model.Comics.Any())
+    {
+        <div class="alert alert-info shadow-sm">
+            No items found listed under the category "<strong>@Model.CurrentGenre</strong>".
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
+            @foreach (var item in Model.Comics)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0 position-relative transition-hover">
+                        @if (!string.IsNullOrEmpty(item.Cover))
+                        {
+                            <img src="~/Images/@item.Cover" class="card-img-top rounded-top shadow-sm" alt="@item.Name Cover" style="height: 220px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div class="bg-light d-flex align-items-center justify-content-center border-bottom text-muted small rounded-top" style="height: 220px;">
+                                No Cover
+                            </div>
+                        }
+                        <div class="card-body p-2 d-flex flex-column justify-content-between">
+                            <div>
+                                <h6 class="card-title text-truncate mb-0 fw-bold text-dark" title="@item.Name">@item.Name</h6>
+                                <p class="card-text text-muted small mb-1">#@item.Number</p>
+                            </div>
+                            <a asp-page="./Comics/Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary w-100 mt-2 stretched-link">Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @* --- Sliding Window Pagination Control Component --- *@
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="Genre page navigation" class="mt-5">
+                <ul class="pagination pagination-sm justify-content-center flex-wrap">
+
+                    @* Prev step *@
+                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                        <a class="page-link bg-light text-dark" asp-page="./Genre" asp-route-genre="@Model.CurrentGenre" asp-route-pageIndex="@(Model.CurrentPage - 1)" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    @* First page lock break out *@
+                    @if (startPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link bg-light text-dark" asp-page="./Genre" asp-route-genre="@Model.CurrentGenre" asp-route-pageIndex="1">1</a>
+                        </li>
+                        @if (startPage > 2)
+                        {
+                            <li class="page-item disabled"><span class="page-link bg-light text-muted">...</span></li>
+                        }
+                    }
+
+                    @* Loop dynamic sequence *@
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                            <a class="page-link @(i == Model.CurrentPage ? "bg-primary text-white border-primary" : "bg-light text-dark")"
+                               asp-page="./Genre"
+                               asp-route-genre="@Model.CurrentGenre"
+                               asp-route-pageIndex="@i">@i</a>
+                        </li>
+                    }
+
+                    @* Last page lock break out *@
+                    @if (endPage < Model.TotalPages)
+                    {
+                        @if (endPage < Model.TotalPages - 1)
+                        {
+                            <li class="page-item disabled"><span class="page-link bg-light text-muted">...</span></li>
+                        }
+                        <li class="page-item">
+                            <a class="page-link bg-light text-dark" asp-page="./Genre" asp-route-genre="@Model.CurrentGenre" asp-route-pageIndex="@Model.TotalPages">@Model.TotalPages</a>
+                        </li>
+                    }
+
+                    @* Next step *@
+                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                        <a class="page-link bg-light text-dark" asp-page="./Genre" asp-route-genre="@Model.CurrentGenre" asp-route-pageIndex="@(Model.CurrentPage + 1)" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    }
+</div>
