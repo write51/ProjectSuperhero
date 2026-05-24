@@ -3,17 +3,30 @@
 @{
     ViewData["Title"] = "Comic Catalog";
     string currentLetter = ViewData["CurrentLetter"] as string;
+
+    // --- Window Pagination Rendering Logic ---
+    int maxVisiblePages = 5;
+    int startPage = Math.Max(1, Model.CurrentPage - (maxVisiblePages / 2));
+    int endPage = Math.Min(Model.TotalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages)
+    {
+        startPage = Math.Max(1, endPage - maxVisiblePages + 1);
+    }
 }
 
 <h2 class="mb-4">Comic Catalog</h2>
 
 <div class="d-flex flex-wrap gap-1 mb-4">
-    <a href="?" class="btn btn-sm @(string.IsNullOrEmpty(currentLetter) ? "btn-primary" : "btn-outline-primary")">All</a>
+    <a asp-page="./Catalog" asp-route-letter="" asp-route-pageIndex="1"
+       class="btn btn-sm @(string.IsNullOrEmpty(currentLetter) ? "btn-primary" : "btn-outline-primary")">All</a>
 
     @foreach (char c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     {
         string letterString = c.ToString();
-        <a href="?letter=@letterString"
+        <a asp-page="./Catalog"
+           asp-route-letter="@letterString"
+           asp-route-pageIndex="1"
            class="btn btn-sm @(currentLetter == letterString ? "btn-primary active" : "btn-outline-primary")">
             @letterString
         </a>
@@ -56,7 +69,6 @@ else
                         @if (!string.IsNullOrEmpty(item.OtherName))
                         {
                             <br />
-                
                             <small class="text-muted">(@item.OtherName)</small>
                         }
                     </td>
@@ -65,11 +77,77 @@ else
                     <td>@item.ReleaseDate.ToString("yyyy-MM-dd")</td>
                     <td>
                         <div class="btn-group btn-group-sm">
-                            <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-outline-info">Details</a>
+                            <a asp-page="./Comics/Details" asp-route-id="@item.Id" class="btn btn-outline-info">Details</a>
                         </div>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+
+    @* --- Small Non-obstructive Pagination Component --- *@
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Catalog page navigation" class="mt-4">
+            <ul class="pagination pagination-sm justify-content-center flex-wrap">
+
+                @* Previous Arrow *@
+                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                    <a class="page-link bg-light text-dark"
+                       asp-page="./Catalog"
+                       asp-route-letter="@currentLetter"
+                       asp-route-pageIndex="@(Model.CurrentPage - 1)"
+                       aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                @* Edge Page: First Page Link *@
+                @if (startPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link bg-light text-dark" asp-page="./Catalog" asp-route-letter="@currentLetter" asp-route-pageIndex="1">1</a>
+                    </li>
+                    @if (startPage > 2)
+                    {
+                        <li class="page-item disabled"><span class="page-link bg-light text-muted">...</span></li>
+                    }
+                }
+
+                @* Sliding Window Links *@
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link @(i == Model.CurrentPage ? "bg-primary text-white border-primary" : "bg-light text-dark")"
+                           asp-page="./Catalog"
+                           asp-route-letter="@currentLetter"
+                           asp-route-pageIndex="@i">@i</a>
+                    </li>
+                }
+
+                @* Edge Page: Last Page Link *@
+                @if (endPage < Model.TotalPages)
+                {
+                    @if (endPage < Model.TotalPages - 1)
+                    {
+                        <li class="page-item disabled"><span class="page-link bg-light text-muted">...</span></li>
+                    }
+                    <li class="page-item">
+                        <a class="page-link bg-light text-dark" asp-page="./Catalog" asp-route-letter="@currentLetter" asp-route-pageIndex="@Model.TotalPages">@Model.TotalPages</a>
+                    </li>
+                }
+
+                @* Next Arrow *@
+                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                    <a class="page-link bg-light text-dark"
+                       asp-page="./Catalog"
+                       asp-route-letter="@currentLetter"
+                       asp-route-pageIndex="@(Model.CurrentPage + 1)"
+                       aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
 }
