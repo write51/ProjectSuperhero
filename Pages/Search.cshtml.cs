@@ -13,7 +13,15 @@ namespace ProjectSuperhero.Pages
         {
             _context = context;
         }
+
         public IList<Comic> Comic { get; set; } = default!;
+
+        // --- Pagination Properties ---
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
+        public bool HasPreviousPage => CurrentPage > 1;
+        public bool HasNextPage => CurrentPage < TotalPages;
+        public int PageSize { get; set; } = 32; // Limit to maximum 32 items
 
         public class ComicQuery
         {
@@ -33,10 +41,16 @@ namespace ProjectSuperhero.Pages
             public string Cover { get; set; }
             public string Resource { get; set; }
             public string Summary { get; set; }
+            public int? PageIndex { get; set; } // Tracks page from URL
         }
+
         public async Task OnGetAsync(ComicQuery query)
         {
+            CurrentPage = query.PageIndex ?? 1;
+            if (CurrentPage < 1) CurrentPage = 1;
+
             // Setup Sort Parameters for the UI Table Headers
+            ViewData["CurrentSort"] = query.SortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(query.SortOrder) ? "name_desc" : "";
             ViewData["NumberSortParm"] = query.SortOrder == "number_asc" ? "number_desc" : "number_asc";
             ViewData["ReleaseDateSortParm"] = query.SortOrder == "releasedate_asc" ? "releasedate_desc" : "releasedate_asc";
@@ -66,8 +80,6 @@ namespace ProjectSuperhero.Pages
             // ==========================================
             // 1. FILTERING LOGIC
             // ==========================================
-
-            // Exact matches for Longs/IDs
             if (!string.IsNullOrEmpty(query.Id) && long.TryParse(query.Id, out long idVal))
             {
                 comicsQuery = comicsQuery.Where(s => s.Id == idVal);
@@ -80,8 +92,6 @@ namespace ProjectSuperhero.Pages
             {
                 comicsQuery = comicsQuery.Where(s => s.Number == numberVal);
             }
-
-            // String Containment matches (Case-Insensitive checks usually handle automatically by EF/SQL collation)
             if (!string.IsNullOrEmpty(query.Name))
             {
                 comicsQuery = comicsQuery.Where(s => s.Name.Contains(query.Name));
@@ -122,21 +132,17 @@ namespace ProjectSuperhero.Pages
             {
                 comicsQuery = comicsQuery.Where(s => s.Summary != null && s.Summary.Contains(query.Summary));
             }
-
-            // Numeric Rating check (Filters comics with a minimum rating or equal to)
             if (!string.IsNullOrEmpty(query.Rating) && long.TryParse(query.Rating, out long ratingVal))
             {
                 comicsQuery = comicsQuery.Where(s => s.Rating >= ratingVal);
             }
-
-            // DateTime parsing
             if (!string.IsNullOrEmpty(query.ReleaseDate) && DateTime.TryParse(query.ReleaseDate, out DateTime rDate))
             {
                 comicsQuery = comicsQuery.Where(s => s.ReleaseDate.Date == rDate.Date);
             }
 
             // ==========================================
-            // 2. SORTING LOGIC (Switch Expression)
+            // 2. SORTING LOGIC
             // ==========================================
             comicsQuery = query.SortOrder switch
             {
@@ -149,12 +155,20 @@ namespace ProjectSuperhero.Pages
                 "rating_desc" => comicsQuery.OrderByDescending(s => s.Rating),
                 "publisher_asc" => comicsQuery.OrderBy(s => s.Publisher),
                 "publisher_desc" => comicsQuery.OrderByDescending(s => s.Publisher),
-                _ => comicsQuery.OrderBy(s => s.Name), // Default Sort configuration
+                _ => comicsQuery.OrderBy(s => s.Name),
             };
 
-            // Execute query to list securely
-            Comic = await comicsQuery.AsNoTracking().ToListAsync();
-        }
+            // ==========================================
+            // 3. PAGINATION EXECUTION
+            // ==========================================
+            int count = await comicsQuery.CountAsync();
+            TotalPages = (int)Math.Ceiling(count / (double)PageSize);
 
+            Comic = await comicsQuery
+                .Skip((CurrentPage - 1) * PageSize)
+                .Take(PageSize)
+                .AsNoTracking()
+                .ToListAsync();
+        }
     }
 }

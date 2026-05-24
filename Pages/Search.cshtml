@@ -1,90 +1,116 @@
 ﻿@page
 @model ProjectSuperhero.Pages.SearchModel
 @{
+    // --- Window Pagination Rendering Logic ---
+    int maxVisiblePages = 5;
+    int startPage = Math.Max(1, Model.CurrentPage - (maxVisiblePages / 2));
+    int endPage = Math.Min(Model.TotalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages)
+    {
+        startPage = Math.Max(1, endPage - maxVisiblePages + 1);
+    }
 }
 
 <form asp-action="Index" method="get" class="card card-body bg-light mb-4">
     <div class="row">
-        <div class="col-md-3 mb-3">
-            <label class="form-label">Comic ID</label>
-            <input type="number" name="Id" value="@ViewData["IdFilter"]" class="form-control" placeholder="Search ID..." />
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <label class="form-label">Series ID</label>
-            <input type="number" name="SeriesId" value="@ViewData["SeriesIdFilter"]" class="form-control" placeholder="Search Series ID..." />
-        </div>
-
-        <div class="col-md-3 mb-3">
+        <div class="col-md-4 mb-3">
             <label class="form-label">Comic Name</label>
             <input type="text" name="Name" value="@ViewData["NameFilter"]" class="form-control" placeholder="Search name..." />
         </div>
 
-        <div class="col-md-3 mb-3">
-            <label class="form-label">Alternative Name</label>
-            <input type="text" name="OtherName" value="@ViewData["OtherNameFilter"]" class="form-control" placeholder="Search alternative name..." />
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <label class="form-label">Issue Number</label>
-            <input type="number" name="Number" value="@ViewData["NumberFilter"]" class="form-control" placeholder="Search issue #..." />
-        </div>
-
-        <div class="col-md-3 mb-3">
+        <div class="col-md-4 mb-3">
             <label class="form-label">Genres</label>
             <input type="text" name="Genres" value="@ViewData["GenresFilter"]" class="form-control" placeholder="e.g. Sci-Fi, Action..." />
         </div>
 
-        <div class="col-md-3 mb-3">
+        <div class="col-md-4 mb-3">
             <label class="form-label">Publisher</label>
             <input type="text" name="Publisher" value="@ViewData["PublisherFilter"]" class="form-control" placeholder="Search publisher..." />
         </div>
+    </div>
 
-        <div class="col-md-3 mb-3">
-            <label class="form-label">Writer</label>
-            <input type="text" name="Writer" value="@ViewData["WriterFilter"]" class="form-control" placeholder="Search writer..." />
+    <div class="accordion accordion-flush mb-3" id="advancedFiltersAccordion">
+        <div class="accordion-item bg-transparent">
+            <h2 class="accordion-header" id="flush-headingOne">
+                <button class="accordion-button collapsed ps-0 bg-transparent text-primary fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                    <i class="bi bi-sliders me-2"></i> Advanced Search Options
+                </button>
+            </h2>
+            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#advancedFiltersAccordion">
+                <div class="accordion-body px-0 pt-3">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Comic ID</label>
+                            <input type="number" name="Id" value="@ViewData["IdFilter"]" class="form-control" placeholder="Search ID..." />
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Series ID</label>
+                            <input type="number" name="SeriesId" value="@ViewData["SeriesIdFilter"]" class="form-control" placeholder="Search Series ID..." />
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Alternative Name</label>
+                            <input type="text" name="OtherName" value="@ViewData["OtherNameFilter"]" class="form-control" placeholder="Search alternative name..." />
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Issue Number</label>
+                            <input type="number" name="Number" value="@ViewData["NumberFilter"]" class="form-control" placeholder="Search issue #..." />
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Writer</label>
+                            <input type="text" name="Writer" value="@ViewData["WriterFilter"]" class="form-control" placeholder="Search writer..." />
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Artist</label>
+                            <input type="text" name="Artist" value="@ViewData["ArtistFilter"]" class="form-control" placeholder="Search artist..." />
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Minimum Rating</label>
+                            <input type="number" name="Rating" value="@ViewData["RatingFilter"]" class="form-control" placeholder="Search rating..." />
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Release Date</label>
+                            <input type="date" name="ReleaseDate" value="@ViewData["ReleaseDateFilter"]" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Publication Date (Text)</label>
+                            <input type="text" name="PublicationDate" value="@ViewData["PublicationDateFilter"]" class="form-control" placeholder="e.g. May 2026..." />
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Cover Image Source</label>
+                            <input type="text" name="Cover" value="@ViewData["CoverFilter"]" class="form-control" placeholder="Search cover path/URL..." />
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Resource/Source</label>
+                            <input type="text" name="Resource" value="@ViewData["ResourceFilter"]" class="form-control" placeholder="Search resource..." />
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Summary Keywords</label>
+                            <input type="text" name="Summary" value="@ViewData["SummaryFilter"]" class="form-control" placeholder="Search keywords in summary..." />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <div class="col-md-3 mb-3">
-            <label class="form-label">Artist</label>
-            <input type="text" name="Artist" value="@ViewData["ArtistFilter"]" class="form-control" placeholder="Search artist..." />
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <label class="form-label">Minimum Rating</label>
-            <input type="number" name="Rating" value="@ViewData["RatingFilter"]" class="form-control" placeholder="Search rating..." />
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <label class="form-label">Release Date</label>
-            <input type="date" name="ReleaseDate" value="@ViewData["ReleaseDateFilter"]" class="form-control" />
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <label class="form-label">Publication Date (Text)</label>
-            <input type="text" name="PublicationDate" value="@ViewData["PublicationDateFilter"]" class="form-control" placeholder="e.g. May 2026..." />
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label class="form-label">Cover Image Source</label>
-            <input type="text" name="Cover" value="@ViewData["CoverFilter"]" class="form-control" placeholder="Search cover path/URL..." />
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label class="form-label">Resource/Source</label>
-            <input type="text" name="Resource" value="@ViewData["ResourceFilter"]" class="form-control" placeholder="Search resource..." />
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label class="form-label">Summary Keywords</label>
-            <input type="text" name="Summary" value="@ViewData["SummaryFilter"]" class="form-control" placeholder="Search keywords in summary..." />
-        </div>
-
-        <div class="col-md-12 mt-2">
-            <button type="submit" class="btn btn-primaryme-2">
+    <div class="row">
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-primary me-2">
                 <i class="bi bi-search"></i> Apply Filters
             </button>
-            <a asp-action="Index" class="btn btn-secondary">Clear Filters</a>
+            <a asp-page="./Search" class="btn btn-secondary">Clear Filters</a>
         </div>
     </div>
 </form>
@@ -96,13 +122,61 @@
                 @Html.DisplayNameFor(model => model.Comic[0].Cover)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Comic[0].Name)</a>
+                <a asp-page="./Search"
+                   asp-route-sortOrder="@ViewData["NameSortParm"]"
+                   asp-route-id="@ViewData["IdFilter"]"
+                   asp-route-seriesId="@ViewData["SeriesIdFilter"]"
+                   asp-route-name="@ViewData["NameFilter"]"
+                   asp-route-otherName="@ViewData["OtherNameFilter"]"
+                   asp-route-number="@ViewData["NumberFilter"]"
+                   asp-route-genres="@ViewData["GenresFilter"]"
+                   asp-route-publisher="@ViewData["PublisherFilter"]"
+                   asp-route-writer="@ViewData["WriterFilter"]"
+                   asp-route-artist="@ViewData["ArtistFilter"]"
+                   asp-route-rating="@ViewData["RatingFilter"]"
+                   asp-route-releaseDate="@ViewData["ReleaseDateFilter"]"
+                   asp-route-publicationDate="@ViewData["PublicationDateFilter"]"
+                   asp-route-cover="@ViewData["CoverFilter"]"
+                   asp-route-resource="@ViewData["ResourceFilter"]"
+                   asp-route-summary="@ViewData["SummaryFilter"]">@Html.DisplayNameFor(model => model.Comic[0].Name)</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NumberSortParm"]">@Html.DisplayNameFor(model => model.Comic[0].Number)</a>
+                <a asp-page="./Search"
+                   asp-route-sortOrder="@ViewData["NumberSortParm"]"
+                   asp-route-id="@ViewData["IdFilter"]"
+                   asp-route-seriesId="@ViewData["SeriesIdFilter"]"
+                   asp-route-name="@ViewData["NameFilter"]"
+                   asp-route-otherName="@ViewData["OtherNameFilter"]"
+                   asp-route-number="@ViewData["NumberFilter"]"
+                   asp-route-genres="@ViewData["GenresFilter"]"
+                   asp-route-publisher="@ViewData["PublisherFilter"]"
+                   asp-route-writer="@ViewData["WriterFilter"]"
+                   asp-route-artist="@ViewData["ArtistFilter"]"
+                   asp-route-rating="@ViewData["RatingFilter"]"
+                   asp-route-releaseDate="@ViewData["ReleaseDateFilter"]"
+                   asp-route-publicationDate="@ViewData["PublicationDateFilter"]"
+                   asp-route-cover="@ViewData["CoverFilter"]"
+                   asp-route-resource="@ViewData["ResourceFilter"]"
+                   asp-route-summary="@ViewData["SummaryFilter"]">@Html.DisplayNameFor(model => model.Comic[0].Number)</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["PublisherSortParm"]">@Html.DisplayNameFor(model => model.Comic[0].Publisher)</a>
+                <a asp-page="./Search"
+                   asp-route-sortOrder="@ViewData["PublisherSortParm"]"
+                   asp-route-id="@ViewData["IdFilter"]"
+                   asp-route-seriesId="@ViewData["SeriesIdFilter"]"
+                   asp-route-name="@ViewData["NameFilter"]"
+                   asp-route-otherName="@ViewData["OtherNameFilter"]"
+                   asp-route-number="@ViewData["NumberFilter"]"
+                   asp-route-genres="@ViewData["GenresFilter"]"
+                   asp-route-publisher="@ViewData["PublisherFilter"]"
+                   asp-route-writer="@ViewData["WriterFilter"]"
+                   asp-route-artist="@ViewData["ArtistFilter"]"
+                   asp-route-rating="@ViewData["RatingFilter"]"
+                   asp-route-releaseDate="@ViewData["ReleaseDateFilter"]"
+                   asp-route-publicationDate="@ViewData["PublicationDateFilter"]"
+                   asp-route-cover="@ViewData["CoverFilter"]"
+                   asp-route-resource="@ViewData["ResourceFilter"]"
+                   asp-route-summary="@ViewData["SummaryFilter"]">@Html.DisplayNameFor(model => model.Comic[0].Publisher)</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Comic[0].Writer)
@@ -114,10 +188,42 @@
                 @Html.DisplayNameFor(model => model.Comic[0].Genres)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["ReleaseDateSortParm"]">@Html.DisplayNameFor(model => model.Comic[0].ReleaseDate)</a>
+                <a asp-page="./Search"
+                   asp-route-sortOrder="@ViewData["ReleaseDateSortParm"]"
+                   asp-route-id="@ViewData["IdFilter"]"
+                   asp-route-seriesId="@ViewData["SeriesIdFilter"]"
+                   asp-route-name="@ViewData["NameFilter"]"
+                   asp-route-otherName="@ViewData["OtherNameFilter"]"
+                   asp-route-number="@ViewData["NumberFilter"]"
+                   asp-route-genres="@ViewData["GenresFilter"]"
+                   asp-route-publisher="@ViewData["PublisherFilter"]"
+                   asp-route-writer="@ViewData["WriterFilter"]"
+                   asp-route-artist="@ViewData["ArtistFilter"]"
+                   asp-route-rating="@ViewData["RatingFilter"]"
+                   asp-route-releaseDate="@ViewData["ReleaseDateFilter"]"
+                   asp-route-publicationDate="@ViewData["PublicationDateFilter"]"
+                   asp-route-cover="@ViewData["CoverFilter"]"
+                   asp-route-resource="@ViewData["ResourceFilter"]"
+                   asp-route-summary="@ViewData["SummaryFilter"]">@Html.DisplayNameFor(model => model.Comic[0].ReleaseDate)</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["RatingSortParm"]">@Html.DisplayNameFor(model => model.Comic[0].Rating)</a>
+                <a asp-page="./Search"
+                   asp-route-sortOrder="@ViewData["RatingSortParm"]"
+                   asp-route-id="@ViewData["IdFilter"]"
+                   asp-route-seriesId="@ViewData["SeriesIdFilter"]"
+                   asp-route-name="@ViewData["NameFilter"]"
+                   asp-route-otherName="@ViewData["OtherNameFilter"]"
+                   asp-route-number="@ViewData["NumberFilter"]"
+                   asp-route-genres="@ViewData["GenresFilter"]"
+                   asp-route-publisher="@ViewData["PublisherFilter"]"
+                   asp-route-writer="@ViewData["WriterFilter"]"
+                   asp-route-artist="@ViewData["ArtistFilter"]"
+                   asp-route-rating="@ViewData["RatingFilter"]"
+                   asp-route-releaseDate="@ViewData["ReleaseDateFilter"]"
+                   asp-route-publicationDate="@ViewData["PublicationDateFilter"]"
+                   asp-route-cover="@ViewData["CoverFilter"]"
+                   asp-route-resource="@ViewData["ResourceFilter"]"
+                   asp-route-summary="@ViewData["SummaryFilter"]">@Html.DisplayNameFor(model => model.Comic[0].Rating)</a>
             </th>
             <th></th>
         </tr>
@@ -129,7 +235,7 @@
                 <td>
                     @if (!string.IsNullOrEmpty(item.Cover))
                     {
-                        <img src="@item.Cover" alt="Cover for @item.Name" style="max-height: 80px; width: auto; border-radius: 4px;" />
+                        <img src="Images/@item.Cover" alt="Cover for @item.Name" style="max-height: 80px; width: auto; border-radius: 4px;" />
                     }
                     else
                     {
@@ -141,7 +247,6 @@
                     @if (!string.IsNullOrEmpty(item.OtherName))
                     {
                         <br />
-                
                         <small class="text-muted">(@item.OtherName)</small>
                     }
                 </td>
@@ -168,12 +273,130 @@
                 </td>
                 <td>
                     <div class="btn-group btn-group-sm" role="group">
-                        <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">Edit</a>
-                        <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-outline-info">Details</a>
-                        <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a>
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <a asp-page="./Admin/Comics/Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">Edit</a>
+                            <a asp-page="./Comics/Details" asp-route-id="@item.Id" class="btn btn-outline-info">Details</a>
+                            <a asp-page="./Admin/Comics/Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a>
+                        }
+                        else
+                        {
+                            <a asp-page="./Comics/Details" asp-route-id="@item.Id" class="btn btn-outline-info rounded-start rounded-end">Details</a>
+                        }
                     </div>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@* --- Non-obstructive Small Pagination Element --- *@
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Search page navigation" class="mt-4">
+        <ul class="pagination pagination-sm justify-content-center flex-wrap">
+
+            @* Previous page arrow *@
+            <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link bg-light text-dark"
+                   asp-page="./Search"
+                   asp-route-pageIndex="@(Model.CurrentPage - 1)"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-id="@ViewData["IdFilter"]"
+                   asp-route-seriesId="@ViewData["SeriesIdFilter"]"
+                   asp-route-name="@ViewData["NameFilter"]"
+                   asp-route-otherName="@ViewData["OtherNameFilter"]"
+                   asp-route-number="@ViewData["NumberFilter"]"
+                   asp-route-genres="@ViewData["GenresFilter"]"
+                   asp-route-publisher="@ViewData["PublisherFilter"]"
+                   asp-route-writer="@ViewData["WriterFilter"]"
+                   asp-route-artist="@ViewData["ArtistFilter"]"
+                   asp-route-rating="@ViewData["RatingFilter"]"
+                   asp-route-releaseDate="@ViewData["ReleaseDateFilter"]"
+                   asp-route-publicationDate="@ViewData["PublicationDateFilter"]"
+                   asp-route-cover="@ViewData["CoverFilter"]"
+                   asp-route-resource="@ViewData["ResourceFilter"]"
+                   asp-route-summary="@ViewData["SummaryFilter"]"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            @* Edge logic: first page if skipped *@
+            @if (startPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link bg-light text-dark" asp-page="./Search" asp-route-pageIndex="1" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-id="@ViewData["IdFilter"]" asp-route-seriesId="@ViewData["SeriesIdFilter"]" asp-route-name="@ViewData["NameFilter"]" asp-route-otherName="@ViewData["OtherNameFilter"]" asp-route-number="@ViewData["NumberFilter"]" asp-route-genres="@ViewData["GenresFilter"]" asp-route-publisher="@ViewData["PublisherFilter"]" asp-route-writer="@ViewData["WriterFilter"]" asp-route-artist="@ViewData["ArtistFilter"]" asp-route-rating="@ViewData["RatingFilter"]" asp-route-releaseDate="@ViewData["ReleaseDateFilter"]" asp-route-publicationDate="@ViewData["PublicationDateFilter"]" asp-route-cover="@ViewData["CoverFilter"]" asp-route-resource="@ViewData["ResourceFilter"]" asp-route-summary="@ViewData["SummaryFilter"]">1</a>
+                </li>
+                @if (startPage > 2)
+                {
+                    <li class="page-item disabled"><span class="page-link bg-light text-muted">...</span></li>
+                }
+            }
+
+            @* Dynamic pages window loop *@
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                    <a class="page-link @(i == Model.CurrentPage ? "bg-primary text-white border-primary" : "bg-light text-dark")"
+                       asp-page="./Search"
+                       asp-route-pageIndex="@i"
+                       asp-route-sortOrder="@ViewData["CurrentSort"]"
+                       asp-route-id="@ViewData["IdFilter"]"
+                       asp-route-seriesId="@ViewData["SeriesIdFilter"]"
+                       asp-route-name="@ViewData["NameFilter"]"
+                       asp-route-otherName="@ViewData["OtherNameFilter"]"
+                       asp-route-number="@ViewData["NumberFilter"]"
+                       asp-route-genres="@ViewData["GenresFilter"]"
+                       asp-route-publisher="@ViewData["PublisherFilter"]"
+                       asp-route-writer="@ViewData["WriterFilter"]"
+                       asp-route-artist="@ViewData["ArtistFilter"]"
+                       asp-route-rating="@ViewData["RatingFilter"]"
+                       asp-route-releaseDate="@ViewData["ReleaseDateFilter"]"
+                       asp-route-publicationDate="@ViewData["PublicationDateFilter"]"
+                       asp-route-cover="@ViewData["CoverFilter"]"
+                       asp-route-resource="@ViewData["ResourceFilter"]"
+                       asp-route-summary="@ViewData["SummaryFilter"]">@i</a>
+                </li>
+            }
+
+            @* Edge logic: last page if skipped *@
+            @if (endPage < Model.TotalPages)
+            {
+                @if (endPage < Model.TotalPages - 1)
+                {
+                    <li class="page-item disabled"><span class="page-link bg-light text-muted">...</span></li>
+                }
+                <li class="page-item">
+                    <a class="page-link bg-light text-dark" asp-page="./Search" asp-route-pageIndex="@Model.TotalPages" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-id="@ViewData["IdFilter"]" asp-route-seriesId="@ViewData["SeriesIdFilter"]" asp-route-name="@ViewData["NameFilter"]" asp-route-otherName="@ViewData["OtherNameFilter"]" asp-route-number="@ViewData["NumberFilter"]" asp-route-genres="@ViewData["GenresFilter"]" asp-route-publisher="@ViewData["PublisherFilter"]" asp-route-writer="@ViewData["WriterFilter"]" asp-route-artist="@ViewData["ArtistFilter"]" asp-route-rating="@ViewData["RatingFilter"]" asp-route-releaseDate="@ViewData["ReleaseDateFilter"]" asp-route-publicationDate="@ViewData["PublicationDateFilter"]" asp-route-cover="@ViewData["CoverFilter"]" asp-route-resource="@ViewData["ResourceFilter"]" asp-route-summary="@ViewData["SummaryFilter"]">@Model.TotalPages</a>
+                </li>
+            }
+
+            @* Next page arrow *@
+            <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                <a class="page-link bg-light text-dark"
+                   asp-page="./Search"
+                   asp-route-pageIndex="@(Model.CurrentPage + 1)"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-id="@ViewData["IdFilter"]"
+                   asp-route-seriesId="@ViewData["SeriesIdFilter"]"
+                   asp-route-name="@ViewData["NameFilter"]"
+                   asp-route-otherName="@ViewData["OtherNameFilter"]"
+                   asp-route-number="@ViewData["NumberFilter"]"
+                   asp-route-genres="@ViewData["GenresFilter"]"
+                   asp-route-publisher="@ViewData["PublisherFilter"]"
+                   asp-route-writer="@ViewData["WriterFilter"]"
+                   asp-route-artist="@ViewData["ArtistFilter"]"
+                   asp-route-rating="@ViewData["RatingFilter"]"
+                   asp-route-releaseDate="@ViewData["ReleaseDateFilter"]"
+                   asp-route-publicationDate="@ViewData["PublicationDateFilter"]"
+                   asp-route-cover="@ViewData["CoverFilter"]"
+                   asp-route-resource="@ViewData["ResourceFilter"]"
+                   asp-route-summary="@ViewData["SummaryFilter"]"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+}
